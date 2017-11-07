@@ -12,6 +12,8 @@ app.listen(3000, ()=> {
 });
 
 app.use('/', routes);
+//for css, images and js to be run on the client side
+app.use(express.static('public'))
 
 app.use((req,res,next) => {
   console.log(chalk.blue(req.method + " " + req.url));
@@ -25,6 +27,7 @@ app.engine('html', nunjucks.render);
 
 nunjucks.configure('views', {noCache: true});
 
+//rendered
 // nunjucks.render('index.html', function (err, output) {
 //   if (err) throw err;
 // });
