@@ -1,47 +1,50 @@
 const express = require( 'express' );
 const app = express(); // creates an instance of an express application
 const chalk = require('chalk');
-const nunjucks = require('nunjucks')
+const nunjucks = require('nunjucks');
+let tweetBank = require('./tweetBank.js');
+const routes = require('./routes/index.js')
+//file weve created ==> reference path to that file
 
+//should app.use need to be in index.js??
 app.listen(3000, ()=> {
   console.log('server listening')
 });
 
-//review res render in express documentation
+app.use('/', routes);
 
-app.get('/',(req,res) => {
-  console.log(chalk.blue('hola'))
-  const people = [{name: 'Full'}, {name: 'Stacker'}, {name: 'Son'}];
-  res.render( 'index', locals);
+app.use((req,res,next) => {
+  console.log(chalk.blue(req.method + " " + req.url));
+  next();
 });
-
-app.get('/news',(req,res) => {
-  console.log("listening")
-  res.send("Local news")
-});
-
-function logRequest(path,reqType){
-  console.log(chalk.blue(path.toUpperCase() + " "+ reqType))
-}
 
 //reconfigures the express app object
 app.set('view engine', 'html');
 app.engine('html', nunjucks.render);
 
-nunjucks.configure('views');
+
 nunjucks.configure('views', {noCache: true});
-nunjucks.render('index.html', locals, function (err, output) {
-  if (err) throw err;
-    console.log(output);
-});
+
+// nunjucks.render('index.html', function (err, output) {
+//   if (err) throw err;
+// });
 
 
-var locals = {
-    title: 'An Example',
-    people: [
-        { name: 'Gandalf'},
-        { name: 'Frodo' },
-        { name: 'Hermione'},
-        { name: 'JTown'}
-    ]
-};
+
+
+//to-do: review res render in express documentation
+
+// ******app.use to hook middleware****
+// w/o res itll linger and wait for nextCB()
+// w/o specifiyin uri, itll work for all uris
+// req is a js object it can be used to inject info via object property
+
+// app.use("/", (req,res, nextCB) => {
+// res.send("works for gets puts delete post")
+// nextCB()
+// })
+
+//middleware optionally has next callback
+//res has res.json which sends a json object back
+
+//get allows to hook function to uri
