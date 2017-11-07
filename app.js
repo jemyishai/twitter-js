@@ -7,14 +7,12 @@ app.listen(3000, ()=> {
   console.log('server listening')
 });
 
-// app.use((req,res,next) =>{
-//
-// }
+//review res render in express documentation
 
 app.get('/',(req,res) => {
   console.log(chalk.blue('hola'))
   const people = [{name: 'Full'}, {name: 'Stacker'}, {name: 'Son'}];
-  res.render( 'index', {title: 'Hall of Fame', people: people} );
+  res.render( 'index', locals);
 });
 
 app.get('/news',(req,res) => {
@@ -26,21 +24,24 @@ function logRequest(path,reqType){
   console.log(chalk.blue(path.toUpperCase() + " "+ reqType))
 }
 
+//reconfigures the express app object
 app.set('view engine', 'html');
 app.engine('html', nunjucks.render);
+
 nunjucks.configure('views');
+nunjucks.configure('views', {noCache: true});
+nunjucks.render('index.html', locals, function (err, output) {
+  if (err) throw err;
+    console.log(output);
+});
+
 
 var locals = {
     title: 'An Example',
     people: [
         { name: 'Gandalf'},
         { name: 'Frodo' },
-        { name: 'Hermione'}
+        { name: 'Hermione'},
+        { name: 'JTown'}
     ]
 };
-
-nunjucks.configure('views', {noCache: true});
-nunjucks.render('index.html', locals, function (err, output) {
-  if (err) throw err;
-    console.log(output);
-});
